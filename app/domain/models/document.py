@@ -14,7 +14,7 @@ class DocumentStatus(str, Enum):
     FAILED = "FAILED"
 
 # A form or record for one uploaded file
-@dataclass(frozen=True)
+@dataclass(frozen=False)
 class Document:
     id: str
     filename: str
