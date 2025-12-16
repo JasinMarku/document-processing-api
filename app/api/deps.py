@@ -6,7 +6,7 @@ from app.infrastructure.storage.in_memory_storage import InMemoryStorage
 from app.infrastructure.queue.in_memory_queue import InMemoryQueue
 
 # Import service that needs them
-from app.services.documents_service import DocumentService
+from app.services.document_service import DocumentService
 
 # Returns the same repository every time (so data doesn't disappear between requests)
 @lru_cache(maxsize=1)
