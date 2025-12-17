@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException # APIRouter makes a group of endpoints
 
 # Import DI, schemas, and service
-from app.api.deps import get_document_service
+from app.api.deps import get_document_service, get_documents_repo, get_queue
 from app.api.schemas.documents import InitiateUploadRequest, InitiateUploadResponse, DocumentResponse, EnqueueResponse
 from app.domain.errors import DocumentNotFoundError
 from app.services.document_service import DocumentService
 from app.domain.errors import InvalidDocumentStateError
+from app.workers.processor_stub import process_job
 
 # Create the router for all document-related endpoints
 router = APIRouter(prefix="/documents")
@@ -66,3 +67,19 @@ def enqueue_document(
         raise HTTPException(status_code=400, detail=str(e)) # 409 Conflict for invalid state
 
     return EnqueueResponse(job_id=job_id)
+
+
+
+# DEBUG:
+# ------------------------------------------------------------------------
+# @router.post("/_debug/process-next")
+# def debug_process_next() -> dict:
+#     repo = get_documents_repo()
+#     queue = get_queue()
+#
+#     msg = queue.dequeue()
+#     if msg is None:
+#         return {"processed": False, "reason": "queue empty"}
+#
+#     process_job(repo=repo, document_id=msg["document_id"])
+#     return {"processed": True, "document_id": msg["document_id"]}
