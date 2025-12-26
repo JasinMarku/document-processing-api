@@ -4,3 +4,7 @@ class DocumentNotFoundError(Exception):
 
 class InvalidDocumentStateError(Exception):
     pass
+
+# Raised when user input violates business rules (content type, filename, etc...)
+class InvalidDocumentInputError(Exception):
+    pass
