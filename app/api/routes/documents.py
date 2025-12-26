@@ -64,7 +64,7 @@ def enqueue_document(
     except DocumentNotFoundError:
         raise HTTPException(status_code=404, detail="Document not found")
     except InvalidDocumentStateError as e:
-        raise HTTPException(status_code=400, detail=str(e)) # 409 Conflict for invalid state
+        raise HTTPException(status_code=409, detail=str(e)) # 409 Conflict for invalid state
 
     return EnqueueResponse(job_id=job_id)
 
