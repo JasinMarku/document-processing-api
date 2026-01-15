@@ -2,6 +2,7 @@ from functools import lru_cache # Helps keep the same instances (singleton)
 
 from app.core.settings import settings                      # Central config
 from app.infrastructure.storage.s3_storage import S3Storage # Real AWS adapter
+from app.infrastructure.queue.sqs_queue import SQSQueue     # Real SQS adapter
 
 # Import fake in-memory implementations
 from app.infrastructure.persistence.in_memory_documents_repo import InMemoryDocumentsRepository
@@ -36,7 +37,19 @@ def get_storage() -> StoragePort:
 
 # Returns the same queue instance every time
 @lru_cache(maxsize=1)
-def get_queue() -> InMemoryQueue:
+def get_queue():
+    """
+    Returns the correct queue implementation based on APP_ENV.
+    - local: InMemoryQueue (fake URLs)
+    - aws: SQSQueue
+    Validates bucket name when using AWS mode.
+    """
+    if settings.APP_ENV == "aws":
+        if not settings.SQS_QUEUE_URL:
+            raise RuntimeError("SQS_QUEUE_URL must be set when APP_ENV = AWS")
+        return SQSQueue()
+
+    # Default: local dev mode
     return InMemoryQueue()
 
 # Builds and returns the full service using the three pieces above
