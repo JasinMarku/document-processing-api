@@ -22,3 +22,13 @@ def get_s3_client():
     """
     session = get_boto3_session()
     return session.client('s3', region_name=settings.AWS_REGION)
+
+# Returns the same SQS client every time (singleton per process)
+@lru_cache(maxsize=1)
+def get_sqs_client():
+    """
+    Gets a reusable SQS client using the cached session.
+    Region comes from settings (defaults to us-east-1 if not set).
+    """
+    session = get_boto3_session()
+    return session.client('sqs', region_name=settings.AWS_REGION)

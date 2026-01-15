@@ -11,7 +11,7 @@ def get_env(name: str, default: str | None = None) -> str:
 # Central config class - loaded once, used everywhere
 class Settings:
     # Main toggle: "local" = in-memory fakes, "aws" = real S3/SQS
-    APP_ENV: str = os.getenv("APP_ENV", "local") # Default to local for saftey
+    APP_ENV: str = os.getenv("APP_ENV", "local") # Default to local for safety
 
     # AWS-specific (only used if APP_ENV is "aws")
     AWS_REGION: str = os.getenv("AWS_REGION", "us-east-1")  # Default region
@@ -22,6 +22,9 @@ class Settings:
     # How long pre-signed URLs stay valid (in seconds)
     # 300 - 5 minutes - good balance between security and usability
     S3_PRESIGN_EXPIRES_IN: int = int(os.getenv("S3_PRESIGN_EXPIRES_IN", "300"))
+
+    # Your SQS queue URL (required for real queue when APP_ENV=aws)
+    SQS_QUEUE_URL: str = os.getenv("SQS_QUEUE_URL", "")
 
 # Global instance
 settings = Settings()
